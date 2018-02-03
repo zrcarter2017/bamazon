@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
 });
  
 connection.connect();
-function displayValues() {
+
  
 connection.query('SELECT * FROM products;', function (error, results, fields) {
     if (error) throw error;
@@ -22,7 +22,7 @@ connection.query('SELECT * FROM products;', function (error, results, fields) {
     
 
   });
-};
+
 
 function calculateQuantity(productID) {
   connection.query('SELECT stock_quantity FROM products WHERE item_id = "' + productID + '";', function (error, results, fields) {
@@ -37,14 +37,14 @@ function calculateQuantity(productID) {
 function calculatePrice(productID, quantity) {
   connection.query('SELECT price FROM products WHERE item_id = "' + productID + '";', function (error, results, fields) {
   if (error) throw error;
-      console.log(parseInt(results) * parseInt(quantity));
+      console.log(results * quantity);
   connection.end();
 
   });
 };
 
 function updateQuantity(numberPurchased, productID) {
-  connection.query('UDPATE products SET stock_quantity = "`stock_quantity` - ' + numberPurchased + '" WHERE productID = "' + productID + '";', function (error, results, fields) {
+  connection.query('UDPATE products SET stock_quantity = "stock_quantity - ' + numberPurchased + '" WHERE productID = "' + productID + '";', function (error, results, fields) {
   if (error) throw error;
       console.log("db updated");
   connection.end();
@@ -52,7 +52,7 @@ function updateQuantity(numberPurchased, productID) {
   });
 }
  
-displayValues();
+
 inquirer.prompt([
 	{
       type: "list",
@@ -70,9 +70,9 @@ inquirer.prompt([
 
 	]).then(function(inquirerResponse) {
 
-    if (parseInt(inquirerResponse.quantity) <= calculateQuantity(inquirerResponse.productId)) {
+    if (parseInt(inquirerResponse.quantity) <= 5) {
       console.log("Your order has been placed");
-      calculatePrice(inquirerResponse.productId, inquirerResponse.quantity);
+      calculatePrice(inquirerResponse.productId, parseInt(inquirerResponse.quantity));
     } else {
       console.log("Insufficient quantity!");
       
